@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Planner</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #ede8e0; min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 32px 16px; font-family: 'Georgia', serif; }
+
+    .planner {
+      width: 100%; max-width: 720px;
+      background: #fdf9f4; border: 0.5px solid #d8d0c4;
+      border-radius: 4px; overflow: visible;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+
+    /* 헤더 */
+    .header {
+      display: grid; grid-template-columns: 1fr auto;
+      padding: 18px 24px 16px; border-bottom: 0.5px solid #d8d0c4;
+    }
+    .quote-block {
+      display: flex; flex-direction: column; justify-content: center;
+      padding-right: 24px; border-right: 0.5px solid #d8d0c4;
+    }
+    .quote-text { font-size: 12px; color: #555; font-style: italic; line-height: 1.8; }
+    .quote-author { font-size: 11px; color: #aaa; margin-top: 5px; letter-spacing: 0.04em; }
+    .date-block {
+      padding-left: 24px; display: flex; flex-direction: column;
+      align-items: flex-start; gap: 10px; min-width: 170px;
+    }
+    .date-label { font-size: 10px; color: #aaa; letter-spacing: 0.1em; text-transform: uppercase; font-family: 'Helvetica Neue', sans-serif; }
+    .date-value { font-size: 16px; color: #1a1a1a; font-weight: 500; letter-spacing: 0.04em; font-family: 'Helvetica Neue', sans-serif; }
+    .dow-row { display: flex; gap: 4px; }
+    .dow-row span {
+      font-size: 11px; width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; color: #bbb;
+      font-family: 'Helvetica Neue', sans-serif; font-weight: 500; cursor: default;
+    }
+    .dow-row span.active { background: #1a1a1a; color: #fdf9f4; }
+
+    /* 루틴 바 */
+    .routine-bar {
+      padding: 12px 24px 14px; border-bottom: 0.5px solid #d8d0c4; background: #f7f2eb;
+    }
+    .routine-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .routine-label { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #aaa; font-family: 'Helvetica Neue', sans-serif; }
+    .routine-actions { display: flex; align-items: center; gap: 10px; }
+    .routine-progress { font-size: 11px; color: #bbb; font-family: 'Helvetica Neue', sans-serif; }
+    .btn-edit-routine {
+      font-size: 11px; color: #888; background: white; border: 0.5px solid #d8d0c4;
+      border-radius: 20px; padding: 4px 12px; cursor: pointer;
+      font-family: 'Helvetica Neue', sans-serif; transition: all 0.15s;
+    }
+    .btn-edit-routine:hover { border-color: #bbb; color: #333; }
+    .btn-edit-routine.active { background: #1a1a1a; color: #fdf9f4; border-color: #1a1a1a; }
+
+    .routine-items { display: flex; flex-wrap: wrap; gap: 7px; }
+    .routine-item {
+      display: flex; align-items: center; gap: 5px;
+      background: white; border: 0.5px solid #d8d0c4; border-radius: 20px;
+      padding: 5px 12px 5px 8px; cursor: pointer; transition: all 0.15s; user-select: none;
+    }
+    .routine-item:hover { border-color: #aaa; }
+    .routine-item.done { background: #1a1a1a; border-color: #1a1a1a; }
+    .routine-icon { font-size: 15px; line-height: 1; }
+    .routine-name { font-size: 12px; color: #555; font-family: 'Helvetica Neue', sans-serif; }
+    .routine-item.done .routine-name { color: #fdf9f4; }
+    .r-check {
+      width: 13px; height: 13px; border: 1px solid #ddd; border-radius: 50%;
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+    }
+    .routine-item.done .r-check { background: #fdf9f4; border-color: #fdf9f4; }
+    .routine-item.done .r-check::after {
+      content: ''; width: 5px; height: 3px;
+      border-left: 1.5px solid #1a1a1a; border-bottom: 1.5px solid #1a1a1a;
+      transform: rotate(-45deg) translateY(-1px); display: block;
+    }
+
+    /* 편집 패널 */
+    .edit-panel {
+      display: none; margin-top: 12px; background: white;
+      border: 0.5px solid #d8d0c4; border-radius: 6px; overflow: visible;
+    }
+    .edit-panel.open { display: block; }
+    .edit-panel-head {
+      padding: 9px 14px; background: #f0ebe3; font-size: 11px; color: #888;
+      font-family: 'Helvetica Neue', sans-serif; border-bottom: 0.5px solid #d8d0c4;
+    }
+    .edit-rows { padding: 10px 14px; display: flex; flex-direction: column; gap: 7px; }
+    .edit-row { display: flex; align-items: center; gap: 7px; }
+    .emoji-btn {
+      font-size: 17px; width: 34px; height: 34px; border: 0.5px solid #d8d0c4;
+      border-radius: 6px; background: white; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; position: relative;
+    }
+    .emoji-btn:hover { border-color: #aaa; }
+    .edit-name-input {
+      flex: 1; border: 0.5px solid #d8d0c4; border-radius: 4px;
+      padding: 7px 10px; font-size: 13px; font-family: inherit;
+      outline: none; color: #333;
+    }
+    .edit-name-input:focus { border-color: #aaa; }
+    .btn-del-row {
+      width: 28px; height: 28px; border: none; background: none;
+      color: #ccc; cursor: pointer; font-size: 18px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; border-radius: 4px;
+    }
+    .btn-del-row:hover { background: #fee; color: #c00; }
+    .edit-footer {
+      padding: 10px 14px; border-top: 0.5px solid #d8d0c4; display: flex; gap: 8px; align-items: center;
+    }
+    .btn-add-row {
+      font-size: 12px; color: #777; background: #f7f2eb; border: 0.5px solid #d8d0c4;
+      border-radius: 4px; padding: 6px 14px; cursor: pointer; font-family: 'Helvetica Neue', sans-serif;
+    }
+    .btn-add-row:hover { background: #ede7de; }
+    .btn-save-routine {
+      font-size: 12px; color: #fdf9f4; background: #1a1a1a; border: none;
+      border-radius: 4px; padding: 6px 16px; cursor: pointer;
+      font-family: 'Helvetica Neue', sans-serif; margin-left: auto;
+    }
+    .btn-save-routine:hover { background: #333; }
+
+    /* 이모지 피커 */
+    .emoji-picker {
+      display: none; position: absolute; top: 38px; left: 0;
+      background: white; border: 0.5px solid #d8d0c4; border-radius: 6px;
+      padding: 7px; z-index: 300; box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      width: 210px; flex-wrap: wrap; gap: 4px;
+    }
+    .emoji-picker.open { display: flex; }
+    .e-opt {
+      font-size: 19px; width: 30px; height: 30px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; border-radius: 4px;
+    }
+    .e-opt:hover { background: #f0ebe3; }
+
+    /* 바디 */
+    .body { display: grid; grid-template-columns: 1fr 1fr; }
+    .left-col {
+      padding: 18px 16px 18px 24px; border-right: 0.5px solid #d8d0c4;
+      display: flex; flex-direction: column;
+    }
+    .right-col { padding: 18px 24px 18px 16px; }
+    .section-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: #888; margin-bottom: 10px;
+      font-family: 'Helvetica Neue', sans-serif;
+    }
+
+    /* Top 3 */
+    .priority-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
+    .priority-item {
+      display: flex; align-items: center; gap: 9px;
+      background: white; border: 0.5px solid #d8d0c4; border-radius: 3px; padding: 8px 12px;
+    }
+    .priority-item .num { font-size: 10px; color: #ccc; font-weight: 700; min-width: 16px; font-family: 'Helvetica Neue', sans-serif; }
+    .priority-item input {
+      border: none; background: transparent; outline: none;
+      font-size: 13px; color: #1a1a1a; width: 100%; font-family: inherit;
+    }
+    .priority-item input::placeholder { color: #ddd; }
+    .check-box {
+      width: 15px; height: 15px; border: 1px solid #ccc; border-radius: 2px;
+      cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+    }
+    .check-box.checked { background: #1a1a1a; border-color: #1a1a1a; }
+    .check-box.checked::after {
+      content: ''; width: 7px; height: 4px;
+      border-left: 1.5px solid white; border-bottom: 1.5px solid white;
+      transform: rotate(-45deg) translateY(-1px); display: block;
+    }
+
+    /* Brain Dump */
+    .brain-section { flex: 1; display: flex; flex-direction: column; }
+    .brain-textarea {
+      flex: 1; min-height: 130px; width: 100%;
+      border: 0.5px solid #d8d0c4; border-radius: 3px; background: white;
+      padding: 10px 12px; font-size: 13px; color: #333; font-family: inherit;
+      line-height: 1.8; outline: none; resize: none;
+    }
+    .brain-textarea::placeholder { color: #ddd; }
+    .brain-textarea:focus { border-color: #aaa; }
+
+    /* Time Box */
+    .timebox-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .min-note { font-size: 10px; color: #bbb; font-family: 'Helvetica Neue', sans-serif; }
+    .timebox-table { width: 100%; border-collapse: collapse; }
+    .timebox-table tr { border-bottom: 0.5px solid #ede7de; }
+    .timebox-table tr:last-child { border-bottom: none; }
+    .th {
+      font-size: 11px; color: #bbb; width: 22px; text-align: right;
+      padding: 0 7px 0 0; line-height: 28px;
+      font-family: 'Helvetica Neue', sans-serif; user-select: none;
+    }
+    .tc { position: relative; }
+    .bar {
+      height: 28px; border-radius: 2px; display: flex; align-items: center;
+      padding: 0 8px; cursor: pointer; transition: background 0.1s;
+    }
+    .bar:hover { filter: brightness(0.96); }
+    .bar-text { font-size: 12px; pointer-events: none; font-weight: 500; }
+    .cp {
+      display: none; position: absolute; right: 0; top: 100%;
+      background: white; border: 0.5px solid #d8d0c4; border-radius: 4px;
+      padding: 8px; gap: 4px; z-index: 100;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1); flex-wrap: wrap; width: 120px;
+    }
+    .cp.open { display: flex; }
+    .swatch {
+      width: 22px; height: 22px; border-radius: 3px; cursor: pointer;
+      border: 1px solid rgba(0,0,0,0.06); transition: transform 0.1s; flex-shrink: 0;
+    }
+    .swatch:hover { transform: scale(1.15); }
+    .cp input {
+      width: 100%; border: none; border-top: 0.5px solid #eee;
+      padding: 5px 4px; font-size: 11px; outline: none;
+      margin-top: 4px; font-family: inherit; color: #333;
+    }
+    .divider-tr td { padding: 2px 0; }
+    .divider-line { border-top: 0.8px dashed #d8d0c4; }
+
+    /* 푸터 */
+    .planner-footer {
+      border-top: 0.5px solid #d8d0c4; background: #f7f2eb;
+      padding: 10px 24px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .hint { font-size: 10px; color: #bbb; font-family: 'Helvetica Neue', sans-serif; }
+    .btn-clear {
+      font-size: 10px; color: #bbb; background: none; border: none;
+      cursor: pointer; font-family: 'Helvetica Neue', sans-serif;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .btn-clear:hover { color: #555; }
+
+    @media (max-width: 520px) {
+      .body { grid-template-columns: 1fr; }
+      .left-col { border-right: none; border-bottom: 0.5px solid #d8d0c4; padding: 16px; }
+      .right-col { padding: 16px; }
+      .header { grid-template-columns: 1fr; gap: 12px; }
+      .quote-block { border-right: none; padding-right: 0; border-bottom: 0.5px solid #d8d0c4; padding-bottom: 12px; }
+      .date-block { padding-left: 0; }
+    }
+  </style>
+</head>
+<body>
+<div class="planner">
+
+  <!-- 헤더 -->
+  <div class="header">
+    <div class="quote-block">
+      <p class="quote-text">어릴 때부터 내가 이루고 싶은 목표가 있으면,<br>루틴을 찾고 습관을 들여<br>자연스럽게 목표를 달성했다.</p>
+      <p class="quote-author">— 오타니 쇼헤이</p>
+    </div>
+    <div class="date-block">
+      <div>
+        <div class="date-label">Date</div>
+        <div class="date-value" id="dateVal"></div>
+      </div>
+      <div class="dow-row">
+        <span data-i="0">S</span><span data-i="1">M</span><span data-i="2">T</span>
+        <span data-i="3">W</span><span data-i="4">T</span><span data-i="5">F</span><span data-i="6">S</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 매일 루틴 -->
+  <div class="routine-bar">
+    <div class="routine-top">
+      <span class="routine-label">매일 루틴</span>
+      <div class="routine-actions">
+        <span class="routine-progress" id="routineProgress">0 / 6</span>
+        <button class="btn-edit-routine" id="btnEditRoutine" onclick="toggleEditPanel()">✏️ 루틴 편집</button>
+      </div>
+    </div>
+    <div class="routine-items" id="routineItems"></div>
+    <div class="edit-panel" id="editPanel">
+      <div class="edit-panel-head">항목을 수정하거나 추가하세요 — 이모지를 눌러 아이콘을 바꿀 수 있어요</div>
+      <div class="edit-rows" id="editRows"></div>
+      <div class="edit-footer">
+        <button class="btn-add-row" onclick="addEditRow('🌟','')">＋ 항목 추가</button>
+        <button class="btn-save-routine" onclick="saveRoutine()">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 바디 -->
+  <div class="body">
+    <div class="left-col">
+      <div class="section-label">Top 3 Priorities</div>
+      <div class="priority-list">
+        <div class="priority-item"><span class="num">01</span><input type="text" placeholder="첫 번째 목표" /><div class="check-box" onclick="toggleCheck(this)"></div></div>
+        <div class="priority-item"><span class="num">02</span><input type="text" placeholder="두 번째 목표" /><div class="check-box" onclick="toggleCheck(this)"></div></div>
+        <div class="priority-item"><span class="num">03</span><input type="text" placeholder="세 번째 목표" /><div class="check-box" onclick="toggleCheck(this)"></div></div>
+      </div>
+      <div class="brain-section">
+        <div class="section-label">Brain Dump</div>
+        <textarea class="brain-textarea" placeholder="지금 머릿속에 있는 것들을 자유롭게 적어보세요..."></textarea>
+      </div>
+    </div>
+    <div class="right-col">
+      <div class="timebox-header">
+        <span class="section-label" style="margin-bottom:0">Time Box</span>
+        <span class="min-note">30 min</span>
+      </div>
+      <table class="timebox-table" id="tbTable"></table>
+    </div>
+  </div>
+
+  <div class="planner-footer">
+    <span class="hint">시간 셀 클릭 → 색상 + 내용 입력</span>
+    <button class="btn-clear" onclick="clearAll()">초기화</button>
+  </div>
+</div>
+
+<script>
+  const EMOJIS = ['🙏','📖','🤲','💪','🍋','🦵','🌅','🧘','🏃','💧','🥗','😴','📝','🎯','🔥','💡','🌿','☀️','🎵','❤️','⭐','🌟','✅','🧠'];
+  const COLORS = [
+    {bg:'#c8eadf',fg:'#0f6e56'},{bg:'#fde9c8',fg:'#854f0b'},{bg:'#fcd5d5',fg:'#a32d2d'},
+    {bg:'#d5e8f8',fg:'#185fa5'},{bg:'#e8d5f8',fg:'#534ab7'},{bg:'#d5f8e1',fg:'#3b6d11'},
+    {bg:'#f8d5ed',fg:'#993556'},{bg:'#fffbd5',fg:'#7a6a00'},{bg:'transparent',fg:'#bbb'},
+  ];
+  const HOURS = [4,5,6,null,7,8,9,10,11,null,12,1,2,3,4,null,5,6,7,8,9,10,11,null,12,1,2];
+
+  let routines = [
+    {emoji:'🙏',name:'감사'},{emoji:'📖',name:'말씀'},{emoji:'🤲',name:'기도'},
+    {emoji:'💪',name:'운동'},{emoji:'🍋',name:'레몬물'},{emoji:'🦵',name:'스쿼트'},
+  ];
+  let cells = {};
+  let openKey = null;
+  let openEmoji = null;
+
+  function renderRoutines() {
+    const c = document.getElementById('routineItems');
+    c.innerHTML = routines.map(r => `
+      <div class="routine-item" onclick="toggleRoutine(this)">
+        <div class="r-check"></div>
+        <span class="routine-icon">${r.emoji}</span>
+        <span class="routine-name">${r.name}</span>
+      </div>`).join('');
+    updateProgress();
+  }
+
+  function toggleRoutine(el) { el.classList.toggle('done'); updateProgress(); }
+
+  function updateProgress() {
+    const total = document.querySelectorAll('.routine-item').length;
+    const done = document.querySelectorAll('.routine-item.done').length;
+    document.getElementById('routineProgress').textContent = `${done} / ${total}`;
+  }
+
+  function toggleEditPanel() {
+    const panel = document.getElementById('editPanel');
+    const btn = document.getElementById('btnEditRoutine');
+    const isOpen = panel.classList.toggle('open');
+    btn.classList.toggle('active', isOpen);
+    if (isOpen) renderEditRows();
+  }
+
+  function renderEditRows() {
+    document.getElementById('editRows').innerHTML = '';
+    routines.forEach(r => addEditRow(r.emoji, r.name));
+  }
+
+  function addEditRow(emoji, name) {
+    const container = document.getElementById('editRows');
+    const rowId = 'r' + Date.now() + Math.floor(Math.random()*9999);
+    const div = document.createElement('div');
+    div.className = 'edit-row'; div.dataset.rowId = rowId;
+    div.innerHTML = `
+      <div class="emoji-btn" onclick="toggleEmojiPicker(event,'${rowId}')">
+        <span class="emoji-val">${emoji}</span>
+        <div class="emoji-picker" id="ep-${rowId}">
+          ${EMOJIS.map(e=>`<div class="e-opt" onclick="pickEmoji(event,'${rowId}','${e}')">${e}</div>`).join('')}
+        </div>
+      </div>
+      <input class="edit-name-input" type="text" value="${name}" placeholder="루틴 이름" />
+      <button class="btn-del-row" onclick="delRow('${rowId}')">×</button>`;
+    container.appendChild(div);
+  }
+
+  function toggleEmojiPicker(e, rowId) {
+    e.stopPropagation();
+    if (openEmoji && openEmoji !== rowId) document.getElementById('ep-'+openEmoji)?.classList.remove('open');
+    const el = document.getElementById('ep-'+rowId);
+    el.classList.toggle('open');
+    openEmoji = el.classList.contains('open') ? rowId : null;
+  }
+
+  function pickEmoji(e, rowId, emoji) {
+    e.stopPropagation();
+    document.querySelector(`[data-row-id="${rowId}"] .emoji-val`).textContent = emoji;
+    document.getElementById('ep-'+rowId).classList.remove('open');
+    openEmoji = null;
+  }
+
+  function delRow(rowId) { document.querySelector(`[data-row-id="${rowId}"]`)?.remove(); }
+
+  function saveRoutine() {
+    routines = [];
+    document.querySelectorAll('.edit-row').forEach(row => {
+      const emoji = row.querySelector('.emoji-val').textContent.trim();
+      const name = row.querySelector('.edit-name-input').value.trim();
+      if (name) routines.push({emoji, name});
+    });
+    renderRoutines();
+    document.getElementById('editPanel').classList.remove('open');
+    document.getElementById('btnEditRoutine').classList.remove('active');
+  }
+
+  function buildTimebox() {
+    const tb = document.getElementById('tbTable'); tb.innerHTML = '';
+    HOURS.forEach((h, i) => {
+      const tr = document.createElement('tr');
+      if (h === null) {
+        tr.classList.add('divider-tr');
+        tr.innerHTML = `<td colspan="2"><div class="divider-line"></div></td>`;
+      } else {
+        const key = `${h}_${i}`;
+        const d = cells[key] || {ci:8, text:''};
+        const c = COLORS[d.ci];
+        tr.innerHTML = `
+          <td class="th">${h}</td>
+          <td class="tc">
+            <div class="bar" style="background:${c.bg};color:${c.fg};" onclick="openCP(event,'${key}')">
+              <span class="bar-text" id="bt-${key}" style="color:${c.fg};">${d.text}</span>
+            </div>
+            <div class="cp" id="cp-${key}">
+              ${COLORS.map((col,ci)=>`<div class="swatch" style="background:${ci===8?'#f0ebe3':col.bg};" onclick="applyColor(event,'${key}',${ci})"></div>`).join('')}
+              <input type="text" value="${d.text}" placeholder="내용 입력" oninput="updateText('${key}',this.value)" onclick="event.stopPropagation()" />
+            </div>
+          </td>`;
+      }
+      tb.appendChild(tr);
+    });
+  }
+
+  function openCP(e, key) {
+    e.stopPropagation();
+    if (openKey && openKey !== key) document.getElementById('cp-'+openKey)?.classList.remove('open');
+    const el = document.getElementById('cp-'+key);
+    el.classList.toggle('open');
+    openKey = el.classList.contains('open') ? key : null;
+    if (openKey) setTimeout(()=>el.querySelector('input')?.focus(), 50);
+  }
+
+  function applyColor(e, key, ci) {
+    e.stopPropagation();
+    if (!cells[key]) cells[key] = {ci:8, text:''};
+    cells[key].ci = ci;
+    const c = COLORS[ci];
+    const bar = document.getElementById('cp-'+key)?.previousElementSibling;
+    const bt = document.getElementById('bt-'+key);
+    if (bar) { bar.style.background = c.bg; bar.style.color = c.fg; }
+    if (bt) bt.style.color = c.fg;
+  }
+
+  function updateText(key, val) {
+    if (!cells[key]) cells[key] = {ci:8, text:''};
+    cells[key].text = val;
+    const bt = document.getElementById('bt-'+key);
+    if (bt) bt.textContent = val;
+  }
+
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+    const row = el.closest('.priority-item');
+    const inp = row.querySelector('input');
+    if (el.classList.contains('checked')) { row.style.opacity='.4'; inp.style.textDecoration='line-through'; }
+    else { row.style.opacity='1'; inp.style.textDecoration='none'; }
+  }
+
+  function clearAll() {
+    if (!confirm('오늘 플래너를 초기화할까요?')) return;
+    document.querySelectorAll('.priority-item input').forEach(i => { i.value=''; i.style.textDecoration='none'; });
+    document.querySelectorAll('.check-box').forEach(c => c.classList.remove('checked'));
+    document.querySelectorAll('.priority-item').forEach(r => r.style.opacity='1');
+    document.querySelector('.brain-textarea').value = '';
+    document.querySelectorAll('.routine-item').forEach(r => r.classList.remove('done'));
+    updateProgress();
+    cells = {}; openKey = null;
+    buildTimebox();
+  }
+
+  function setDate() {
+    const now = new Date();
+    document.getElementById('dateVal').textContent =
+      `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
+    const day = now.getDay();
+    document.querySelectorAll('.dow-row span').forEach(el => {
+      el.classList.toggle('active', Number(el.dataset.i) === day);
+    });
+  }
+
+  document.addEventListener('click', () => {
+    if (openKey) { document.getElementById('cp-'+openKey)?.classList.remove('open'); openKey=null; }
+    if (openEmoji) { document.getElementById('ep-'+openEmoji)?.classList.remove('open'); openEmoji=null; }
+  });
+
+  setDate();
+  renderRoutines();
+  buildTimebox();
+</script>
+</body>
+</html>

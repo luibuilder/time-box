@@ -603,9 +603,117 @@
     if (openEmoji) { document.getElementById('ep-'+openEmoji)?.classList.remove('open'); openEmoji=null; }
   });
 
+  /* ── localStorage 저장/불러오기 ── */
+  function getTodayKey() {
+    const now = new Date();
+    return `planner_${now.getFullYear()}_${now.getMonth()+1}_${now.getDate()}`;
+  }
+
+  function saveToStorage() {
+    const key = getTodayKey();
+    const priorities = [];
+    document.querySelectorAll('.priority-item').forEach(row => {
+      priorities.push({
+        text: row.querySelector('input').value,
+        checked: row.querySelector('.check-box').classList.contains('checked')
+      });
+    });
+    const routineDone = [];
+    document.querySelectorAll('.routine-item').forEach((r, i) => {
+      routineDone.push(r.classList.contains('done'));
+    });
+    const data = {
+      priorities,
+      brainDump: document.querySelector('.brain-textarea').value,
+      blocks,
+      groups,
+      groupCounter,
+      routines,
+      routineDone,
+    };
+    localStorage.setItem(key, JSON.stringify(data));
+  }
+
+  function loadFromStorage() {
+    const key = getTodayKey();
+    const raw = localStorage.getItem(key);
+    if (!raw) return;
+    try {
+      const data = JSON.parse(raw);
+      // 루틴 설정 복원
+      if (data.routines) routines = data.routines;
+      renderRoutines();
+      // 루틴 완료 상태 복원
+      if (data.routineDone) {
+        document.querySelectorAll('.routine-item').forEach((r, i) => {
+          if (data.routineDone[i]) r.classList.add('done');
+        });
+        updateProgress();
+      }
+      // Top 3 복원
+      if (data.priorities) {
+        document.querySelectorAll('.priority-item').forEach((row, i) => {
+          if (data.priorities[i]) {
+            row.querySelector('input').value = data.priorities[i].text || '';
+            if (data.priorities[i].checked) {
+              row.querySelector('.check-box').classList.add('checked');
+              row.style.opacity = '.4';
+              row.querySelector('input').style.textDecoration = 'line-through';
+            }
+          }
+        });
+      }
+      // Brain Dump 복원
+      if (data.brainDump !== undefined) {
+        document.querySelector('.brain-textarea').value = data.brainDump;
+      }
+      // 타임박스 복원
+      if (data.blocks) blocks = data.blocks;
+      if (data.groups) groups = data.groups;
+      if (data.groupCounter) groupCounter = data.groupCounter;
+      buildTimebox();
+    } catch(e) { console.error('불러오기 실패', e); }
+  }
+
+  // 자동 저장 (변경될 때마다)
+  document.addEventListener('input', saveToStorage);
+  document.addEventListener('change', saveToStorage);
+
+  // 루틴/타임박스 변경시 저장을 위해 기존 함수에 저장 추가
+  const _toggleRoutine = toggleRoutine;
+  toggleRoutine = function(el) { _toggleRoutine(el); saveToStorage(); };
+
+  const _applyBlock = applyBlock;
+  applyBlock = function() { _applyBlock(); saveToStorage(); };
+
+  const _clearBlock = clearBlock;
+  clearBlock = function() { _clearBlock(); saveToStorage(); };
+
+  const _saveRoutine = saveRoutine;
+  saveRoutine = function() { _saveRoutine(); saveToStorage(); };
+
+  const _toggleCheck = toggleCheck;
+  toggleCheck = function(el) { _toggleCheck(el); saveToStorage(); };
+
+  // 초기화 시 저장도 초기화
+  const _clearAll = clearAll;
+  clearAll = function() {
+    if (!confirm('오늘 플래너를 초기화할까요?')) return;
+    document.querySelectorAll('.priority-item input').forEach(i => { i.value=''; i.style.textDecoration='none'; });
+    document.querySelectorAll('.check-box').forEach(c => c.classList.remove('checked'));
+    document.querySelectorAll('.priority-item').forEach(r => r.style.opacity='1');
+    document.querySelector('.brain-textarea').value = '';
+    document.querySelectorAll('.routine-item').forEach(r => r.classList.remove('done'));
+    updateProgress();
+    blocks = {}; groups = {}; groupCounter = 0;
+    buildTimebox();
+    localStorage.removeItem(getTodayKey());
+  };
+
   setDate();
   renderRoutines();
   buildTimebox();
+  loadFromStorage();
 </script>
 </body>
 </html>

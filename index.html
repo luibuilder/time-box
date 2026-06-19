@@ -135,13 +135,21 @@
     .btn-clear { font-size: 10px; color: #bbb; background: none; border: none; cursor: pointer; font-family: 'Helvetica Neue', sans-serif; letter-spacing: 0.06em; text-transform: uppercase; }
     .btn-clear:hover { color: #555; }
 
-    @media (max-width: 520px) {
+    @media (max-width: 600px) {
+      body { padding: 0; }
+      .planner { border-radius: 0; box-shadow: none; }
       .body { grid-template-columns: 1fr; }
-      .left-col { border-right: none; border-bottom: 0.5px solid #d8d0c4; padding: 16px; }
-      .right-col { padding: 16px; }
-      .header { grid-template-columns: 1fr; gap: 12px; }
-      .quote-block { border-right: none; padding-right: 0; border-bottom: 0.5px solid #d8d0c4; padding-bottom: 12px; }
-      .date-block { padding-left: 0; }
+      .left-col { border-right: none; border-bottom: 0.5px solid #d8d0c4; padding: 14px 16px; }
+      .right-col { padding: 14px 16px; }
+      .header { grid-template-columns: 1fr auto; padding: 12px 16px; }
+      .quote-block { padding-right: 12px; }
+      .date-block { padding-left: 12px; min-width: 120px; }
+      .date-value { font-size: 13px; }
+      .dow-row span { width: 20px; height: 20px; font-size: 10px; }
+      .routine-bar { padding: 10px 16px 12px; }
+      .timebox-hint { display: none; }
+      .tb-cell { height: 36px; }
+      .block-popup { width: calc(100vw - 32px) !important; }
     }
   </style>
 </head>
@@ -383,8 +391,14 @@
     if (!isDragging) return;
     isDragging = false;
     if (selectedCells.length > 0) {
-      const touch = e.changedTouches[0];
-      openPopup({clientX: touch.clientX, clientY: touch.clientY});
+      const isMobile = window.innerWidth <= 600;
+      if (isMobile) {
+        // 모바일에서는 화면 중앙에 팝업 표시
+        openPopup({clientX: window.innerWidth / 2, clientY: window.innerHeight / 2});
+      } else {
+        const touch = e.changedTouches[0];
+        openPopup({clientX: touch.clientX, clientY: touch.clientY});
+      }
     }
   });
 
@@ -422,10 +436,18 @@
     popup.classList.add('open');
 
     // 위치 계산
-    const x = Math.min(e.clientX + 8, window.innerWidth - 260);
-    const y = Math.min(e.clientY + 8, window.innerHeight - 200);
-    popup.style.left = x + 'px';
-    popup.style.top = y + window.scrollY + 'px';
+    const isMobile = window.innerWidth <= 600;
+    if (isMobile) {
+      popup.style.left = '16px';
+      popup.style.right = '16px';
+      popup.style.width = 'auto';
+      popup.style.top = (window.scrollY + window.innerHeight / 2 - 100) + 'px';
+    } else {
+      const x = Math.min(e.clientX + 8, window.innerWidth - 260);
+      const y = Math.min(e.clientY + 8, window.innerHeight - 200);
+      popup.style.left = x + 'px';
+      popup.style.top = y + window.scrollY + 'px';
+    }
 
     setTimeout(() => document.getElementById('popupInput').focus(), 50);
   }

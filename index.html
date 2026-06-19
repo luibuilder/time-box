@@ -245,6 +245,19 @@
       .quote-block { border-right: none; padding-right: 0; border-bottom: 0.5px solid #d8d0c4; padding-bottom: 12px; }
       .date-block { padding-left: 0; }
     }
+
+  /* 모바일 반응형 */
+  @media (max-width: 600px) {
+    body { padding: 12px 8px; }
+
+    .header { grid-template-columns: 1fr; gap: 12px; }
+    .quote-block { border-right: none; border-bottom: 0.5px solid #d8d0c4; padding-right: 0; padding-bottom: 12px; }
+    .date-block { padding-left: 0; min-width: unset; }
+
+    .body { grid-template-columns: 1fr; }
+    .left-col { border-right: none; border-bottom: 0.5px solid #d8d0c4; padding: 16px; }
+    .right-col { padding: 16px; }
+  }
   </style>
 </head>
 <body>

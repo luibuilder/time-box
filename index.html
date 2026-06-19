@@ -91,7 +91,8 @@
     .min-note { font-size: 10px; color: #bbb; font-family: 'Helvetica Neue', sans-serif; }
     .timebox-hint { font-size: 10px; color: #c8c0b4; font-family: 'Helvetica Neue', sans-serif; margin-bottom: 6px; }
 
-    .tb-wrap { user-select: none; }
+    .tb-wrap { user-select: none; touch-action: none; }
+    .tb-cell { touch-action: none; }
     .tb-row { display: flex; align-items: stretch; border-bottom: 0.5px solid #ede7de; }
     .tb-row:last-child { border-bottom: none; }
     .tb-row.divider { border-bottom: none; }
@@ -274,6 +275,7 @@
   let dragStart = -1;
   let dragEnd = -1;
   let selectedCells = [];
+  let mobileTapStart = -1; // 모바일 탭 선택용
 
   // 팝업 상태
   let popupCi = 0;
@@ -307,11 +309,13 @@
         cell.dataset.idx = idx;
         applyBlockStyle(cell, idx);
 
-        // 드래그 이벤트
+        // 드래그 이벤트 (PC)
         cell.addEventListener('mousedown', onCellMouseDown);
         cell.addEventListener('mouseover', onCellMouseOver);
+        // 터치 이벤트 (모바일)
         cell.addEventListener('touchstart', onTouchStart, {passive:false});
         cell.addEventListener('touchmove', onTouchMove, {passive:false});
+        cell.addEventListener('click', onCellClick);
 
         row.appendChild(hourEl);
         row.appendChild(cell);
@@ -367,9 +371,8 @@
     if (selectedCells.length > 0) openPopup(e);
   });
 
-  /* ── 드래그 (터치) ── */
+  /* ── 터치 드래그 (모바일) ── */
   function onTouchStart(e) {
-    e.preventDefault();
     isDragging = true;
     dragStart = Number(this.dataset.idx);
     dragEnd = dragStart;
@@ -377,8 +380,8 @@
   }
 
   function onTouchMove(e) {
-    e.preventDefault();
     if (!isDragging) return;
+    e.preventDefault();
     const touch = e.touches[0];
     const el = document.elementFromPoint(touch.clientX, touch.clientY);
     if (el && el.classList.contains('tb-cell')) {
@@ -391,16 +394,21 @@
     if (!isDragging) return;
     isDragging = false;
     if (selectedCells.length > 0) {
+      const touch = e.changedTouches[0];
       const isMobile = window.innerWidth <= 600;
       if (isMobile) {
-        // 모바일에서는 화면 중앙에 팝업 표시
-        openPopup({clientX: window.innerWidth / 2, clientY: window.innerHeight / 2});
+        openPopup({clientX: window.innerWidth / 2, clientY: window.innerHeight * 0.4});
       } else {
-        const touch = e.changedTouches[0];
         openPopup({clientX: touch.clientX, clientY: touch.clientY});
       }
     }
   });
+
+  /* ── 모바일 탭 선택 (터치 드래그 안될 때 대안) ── */
+  function onCellClick(e) {
+    // PC 마우스 클릭은 무시 (드래그로 처리)
+    if (e.pointerType === 'mouse') return;
+  }
 
   function updateSelection() {
     // dragStart ~ dragEnd 사이의 실제 셀 인덱스만 선택

@@ -8,233 +8,131 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: #ede8e0; min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 32px 16px; font-family: 'Georgia', serif; }
 
-    .planner {
-      width: 100%; max-width: 720px;
-      background: #fdf9f4; border: 0.5px solid #d8d0c4;
-      border-radius: 4px; overflow: visible;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    }
+    .planner { width: 100%; max-width: 720px; background: #fdf9f4; border: 0.5px solid #d8d0c4; border-radius: 4px; overflow: visible; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
 
     /* 헤더 */
-    .header {
-      display: grid; grid-template-columns: 1fr auto;
-      padding: 18px 24px 16px; border-bottom: 0.5px solid #d8d0c4;
-    }
-    .quote-block {
-      display: flex; flex-direction: column; justify-content: center;
-      padding-right: 24px; border-right: 0.5px solid #d8d0c4;
-    }
+    .header { display: grid; grid-template-columns: 1fr auto; padding: 18px 24px 16px; border-bottom: 0.5px solid #d8d0c4; }
+    .quote-block { display: flex; flex-direction: column; justify-content: center; padding-right: 24px; border-right: 0.5px solid #d8d0c4; }
     .quote-text { font-size: 12px; color: #555; font-style: italic; line-height: 1.8; }
     .quote-author { font-size: 11px; color: #aaa; margin-top: 5px; letter-spacing: 0.04em; }
-    .date-block {
-      padding-left: 24px; display: flex; flex-direction: column;
-      align-items: flex-start; gap: 10px; min-width: 170px;
-    }
+    .date-block { padding-left: 24px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-width: 170px; }
     .date-label { font-size: 10px; color: #aaa; letter-spacing: 0.1em; text-transform: uppercase; font-family: 'Helvetica Neue', sans-serif; }
     .date-value { font-size: 16px; color: #1a1a1a; font-weight: 500; letter-spacing: 0.04em; font-family: 'Helvetica Neue', sans-serif; }
     .dow-row { display: flex; gap: 4px; }
-    .dow-row span {
-      font-size: 11px; width: 24px; height: 24px;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 50%; color: #bbb;
-      font-family: 'Helvetica Neue', sans-serif; font-weight: 500; cursor: default;
-    }
+    .dow-row span { font-size: 11px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #bbb; font-family: 'Helvetica Neue', sans-serif; font-weight: 500; }
     .dow-row span.active { background: #1a1a1a; color: #fdf9f4; }
 
     /* 루틴 바 */
-    .routine-bar {
-      padding: 12px 24px 14px; border-bottom: 0.5px solid #d8d0c4; background: #f7f2eb;
-    }
+    .routine-bar { padding: 12px 24px 14px; border-bottom: 0.5px solid #d8d0c4; background: #f7f2eb; }
     .routine-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
     .routine-label { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #aaa; font-family: 'Helvetica Neue', sans-serif; }
     .routine-actions { display: flex; align-items: center; gap: 10px; }
     .routine-progress { font-size: 11px; color: #bbb; font-family: 'Helvetica Neue', sans-serif; }
-    .btn-edit-routine {
-      font-size: 11px; color: #888; background: white; border: 0.5px solid #d8d0c4;
-      border-radius: 20px; padding: 4px 12px; cursor: pointer;
-      font-family: 'Helvetica Neue', sans-serif; transition: all 0.15s;
-    }
+    .btn-edit-routine { font-size: 11px; color: #888; background: white; border: 0.5px solid #d8d0c4; border-radius: 20px; padding: 4px 12px; cursor: pointer; font-family: 'Helvetica Neue', sans-serif; transition: all 0.15s; }
     .btn-edit-routine:hover { border-color: #bbb; color: #333; }
     .btn-edit-routine.active { background: #1a1a1a; color: #fdf9f4; border-color: #1a1a1a; }
-
     .routine-items { display: flex; flex-wrap: wrap; gap: 7px; }
-    .routine-item {
-      display: flex; align-items: center; gap: 5px;
-      background: white; border: 0.5px solid #d8d0c4; border-radius: 20px;
-      padding: 5px 12px 5px 8px; cursor: pointer; transition: all 0.15s; user-select: none;
-    }
+    .routine-item { display: flex; align-items: center; gap: 5px; background: white; border: 0.5px solid #d8d0c4; border-radius: 20px; padding: 5px 12px 5px 8px; cursor: pointer; transition: all 0.15s; user-select: none; }
     .routine-item:hover { border-color: #aaa; }
     .routine-item.done { background: #1a1a1a; border-color: #1a1a1a; }
     .routine-icon { font-size: 15px; line-height: 1; }
     .routine-name { font-size: 12px; color: #555; font-family: 'Helvetica Neue', sans-serif; }
     .routine-item.done .routine-name { color: #fdf9f4; }
-    .r-check {
-      width: 13px; height: 13px; border: 1px solid #ddd; border-radius: 50%;
-      flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s;
-    }
+    .r-check { width: 13px; height: 13px; border: 1px solid #ddd; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
     .routine-item.done .r-check { background: #fdf9f4; border-color: #fdf9f4; }
-    .routine-item.done .r-check::after {
-      content: ''; width: 5px; height: 3px;
-      border-left: 1.5px solid #1a1a1a; border-bottom: 1.5px solid #1a1a1a;
-      transform: rotate(-45deg) translateY(-1px); display: block;
-    }
+    .routine-item.done .r-check::after { content: ''; width: 5px; height: 3px; border-left: 1.5px solid #1a1a1a; border-bottom: 1.5px solid #1a1a1a; transform: rotate(-45deg) translateY(-1px); display: block; }
 
     /* 편집 패널 */
-    .edit-panel {
-      display: none; margin-top: 12px; background: white;
-      border: 0.5px solid #d8d0c4; border-radius: 6px; overflow: visible;
-    }
+    .edit-panel { display: none; margin-top: 12px; background: white; border: 0.5px solid #d8d0c4; border-radius: 6px; overflow: visible; }
     .edit-panel.open { display: block; }
-    .edit-panel-head {
-      padding: 9px 14px; background: #f0ebe3; font-size: 11px; color: #888;
-      font-family: 'Helvetica Neue', sans-serif; border-bottom: 0.5px solid #d8d0c4;
-    }
+    .edit-panel-head { padding: 9px 14px; background: #f0ebe3; font-size: 11px; color: #888; font-family: 'Helvetica Neue', sans-serif; border-bottom: 0.5px solid #d8d0c4; }
     .edit-rows { padding: 10px 14px; display: flex; flex-direction: column; gap: 7px; }
     .edit-row { display: flex; align-items: center; gap: 7px; }
-    .emoji-btn {
-      font-size: 17px; width: 34px; height: 34px; border: 0.5px solid #d8d0c4;
-      border-radius: 6px; background: white; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; position: relative;
-    }
+    .emoji-btn { font-size: 17px; width: 34px; height: 34px; border: 0.5px solid #d8d0c4; border-radius: 6px; background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; }
     .emoji-btn:hover { border-color: #aaa; }
-    .edit-name-input {
-      flex: 1; border: 0.5px solid #d8d0c4; border-radius: 4px;
-      padding: 7px 10px; font-size: 13px; font-family: inherit;
-      outline: none; color: #333;
-    }
+    .edit-name-input { flex: 1; border: 0.5px solid #d8d0c4; border-radius: 4px; padding: 7px 10px; font-size: 13px; font-family: inherit; outline: none; color: #333; }
     .edit-name-input:focus { border-color: #aaa; }
-    .btn-del-row {
-      width: 28px; height: 28px; border: none; background: none;
-      color: #ccc; cursor: pointer; font-size: 18px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; border-radius: 4px;
-    }
+    .btn-del-row { width: 28px; height: 28px; border: none; background: none; color: #ccc; cursor: pointer; font-size: 18px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
     .btn-del-row:hover { background: #fee; color: #c00; }
-    .edit-footer {
-      padding: 10px 14px; border-top: 0.5px solid #d8d0c4; display: flex; gap: 8px; align-items: center;
-    }
-    .btn-add-row {
-      font-size: 12px; color: #777; background: #f7f2eb; border: 0.5px solid #d8d0c4;
-      border-radius: 4px; padding: 6px 14px; cursor: pointer; font-family: 'Helvetica Neue', sans-serif;
-    }
+    .edit-footer { padding: 10px 14px; border-top: 0.5px solid #d8d0c4; display: flex; gap: 8px; align-items: center; }
+    .btn-add-row { font-size: 12px; color: #777; background: #f7f2eb; border: 0.5px solid #d8d0c4; border-radius: 4px; padding: 6px 14px; cursor: pointer; font-family: 'Helvetica Neue', sans-serif; }
     .btn-add-row:hover { background: #ede7de; }
-    .btn-save-routine {
-      font-size: 12px; color: #fdf9f4; background: #1a1a1a; border: none;
-      border-radius: 4px; padding: 6px 16px; cursor: pointer;
-      font-family: 'Helvetica Neue', sans-serif; margin-left: auto;
-    }
+    .btn-save-routine { font-size: 12px; color: #fdf9f4; background: #1a1a1a; border: none; border-radius: 4px; padding: 6px 16px; cursor: pointer; font-family: 'Helvetica Neue', sans-serif; margin-left: auto; }
     .btn-save-routine:hover { background: #333; }
-
-    /* 이모지 피커 */
-    .emoji-picker {
-      display: none; position: absolute; top: 38px; left: 0;
-      background: white; border: 0.5px solid #d8d0c4; border-radius: 6px;
-      padding: 7px; z-index: 300; box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-      width: 210px; flex-wrap: wrap; gap: 4px;
-    }
+    .emoji-picker { display: none; position: absolute; top: 38px; left: 0; background: white; border: 0.5px solid #d8d0c4; border-radius: 6px; padding: 7px; z-index: 300; box-shadow: 0 4px 20px rgba(0,0,0,0.12); width: 210px; flex-wrap: wrap; gap: 4px; }
     .emoji-picker.open { display: flex; }
-    .e-opt {
-      font-size: 19px; width: 30px; height: 30px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; border-radius: 4px;
-    }
+    .e-opt { font-size: 19px; width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
     .e-opt:hover { background: #f0ebe3; }
 
     /* 바디 */
     .body { display: grid; grid-template-columns: 1fr 1fr; }
-    .left-col {
-      padding: 18px 16px 18px 24px; border-right: 0.5px solid #d8d0c4;
-      display: flex; flex-direction: column;
-    }
+    .left-col { padding: 18px 16px 18px 24px; border-right: 0.5px solid #d8d0c4; display: flex; flex-direction: column; }
     .right-col { padding: 18px 24px 18px 16px; }
-    .section-label {
-      font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
-      text-transform: uppercase; color: #888; margin-bottom: 10px;
-      font-family: 'Helvetica Neue', sans-serif;
-    }
+    .section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #888; margin-bottom: 10px; font-family: 'Helvetica Neue', sans-serif; }
 
     /* Top 3 */
     .priority-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
-    .priority-item {
-      display: flex; align-items: center; gap: 9px;
-      background: white; border: 0.5px solid #d8d0c4; border-radius: 3px; padding: 8px 12px;
-    }
+    .priority-item { display: flex; align-items: center; gap: 9px; background: white; border: 0.5px solid #d8d0c4; border-radius: 3px; padding: 8px 12px; }
     .priority-item .num { font-size: 10px; color: #ccc; font-weight: 700; min-width: 16px; font-family: 'Helvetica Neue', sans-serif; }
-    .priority-item input {
-      border: none; background: transparent; outline: none;
-      font-size: 13px; color: #1a1a1a; width: 100%; font-family: inherit;
-    }
+    .priority-item input { border: none; background: transparent; outline: none; font-size: 13px; color: #1a1a1a; width: 100%; font-family: inherit; }
     .priority-item input::placeholder { color: #ddd; }
-    .check-box {
-      width: 15px; height: 15px; border: 1px solid #ccc; border-radius: 2px;
-      cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s;
-    }
+    .check-box { width: 15px; height: 15px; border: 1px solid #ccc; border-radius: 2px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
     .check-box.checked { background: #1a1a1a; border-color: #1a1a1a; }
-    .check-box.checked::after {
-      content: ''; width: 7px; height: 4px;
-      border-left: 1.5px solid white; border-bottom: 1.5px solid white;
-      transform: rotate(-45deg) translateY(-1px); display: block;
-    }
+    .check-box.checked::after { content: ''; width: 7px; height: 4px; border-left: 1.5px solid white; border-bottom: 1.5px solid white; transform: rotate(-45deg) translateY(-1px); display: block; }
 
     /* Brain Dump */
     .brain-section { flex: 1; display: flex; flex-direction: column; }
-    .brain-textarea {
-      flex: 1; min-height: 130px; width: 100%;
-      border: 0.5px solid #d8d0c4; border-radius: 3px; background: white;
-      padding: 10px 12px; font-size: 13px; color: #333; font-family: inherit;
-      line-height: 1.8; outline: none; resize: none;
-    }
+    .brain-textarea { flex: 1; min-height: 130px; width: 100%; border: 0.5px solid #d8d0c4; border-radius: 3px; background: white; padding: 10px 12px; font-size: 13px; color: #333; font-family: inherit; line-height: 1.8; outline: none; resize: none; }
     .brain-textarea::placeholder { color: #ddd; }
     .brain-textarea:focus { border-color: #aaa; }
 
-    /* Time Box */
+    /* ── Time Box (드래그 선택) ── */
     .timebox-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .min-note { font-size: 10px; color: #bbb; font-family: 'Helvetica Neue', sans-serif; }
-    .timebox-table { width: 100%; border-collapse: collapse; }
-    .timebox-table tr { border-bottom: 0.5px solid #ede7de; }
-    .timebox-table tr:last-child { border-bottom: none; }
-    .th {
-      font-size: 11px; color: #bbb; width: 22px; text-align: right;
-      padding: 0 7px 0 0; line-height: 28px;
-      font-family: 'Helvetica Neue', sans-serif; user-select: none;
+    .timebox-hint { font-size: 10px; color: #c8c0b4; font-family: 'Helvetica Neue', sans-serif; margin-bottom: 6px; }
+
+    .tb-wrap { user-select: none; }
+    .tb-row { display: flex; align-items: stretch; border-bottom: 0.5px solid #ede7de; }
+    .tb-row:last-child { border-bottom: none; }
+    .tb-row.divider { border-bottom: none; }
+    .tb-divline { flex: 1; border-top: 0.8px dashed #d8d0c4; margin: 3px 0 3px 28px; }
+
+    .tb-hour { font-size: 11px; color: #bbb; width: 22px; text-align: right; padding-right: 7px; line-height: 30px; flex-shrink: 0; font-family: 'Helvetica Neue', sans-serif; }
+    .tb-cell {
+      flex: 1; height: 30px; border-radius: 2px; cursor: pointer;
+      display: flex; align-items: center; padding: 0 8px;
+      transition: background 0.08s; position: relative;
     }
-    .tc { position: relative; }
-    .bar {
-      height: 28px; border-radius: 2px; display: flex; align-items: center;
-      padding: 0 8px; cursor: pointer; transition: background 0.1s;
+    .tb-cell:hover { filter: brightness(0.94); }
+    .tb-cell.selecting { outline: 2px solid #1a1a1a; outline-offset: -1px; }
+    .tb-label { font-size: 12px; font-weight: 500; pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+
+    /* 블록 레이블 입력 팝업 */
+    .block-popup {
+      display: none; position: fixed; z-index: 500;
+      background: white; border: 0.5px solid #d8d0c4; border-radius: 8px;
+      padding: 14px 16px; box-shadow: 0 8px 28px rgba(0,0,0,0.14); min-width: 220px;
     }
-    .bar:hover { filter: brightness(0.96); }
-    .bar-text { font-size: 12px; pointer-events: none; font-weight: 500; }
-    .cp {
-      display: none; position: absolute; right: 0; top: 100%;
-      background: white; border: 0.5px solid #d8d0c4; border-radius: 4px;
-      padding: 8px; gap: 4px; z-index: 100;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1); flex-wrap: wrap; width: 120px;
-    }
-    .cp.open { display: flex; }
-    .swatch {
-      width: 22px; height: 22px; border-radius: 3px; cursor: pointer;
-      border: 1px solid rgba(0,0,0,0.06); transition: transform 0.1s; flex-shrink: 0;
-    }
-    .swatch:hover { transform: scale(1.15); }
-    .cp input {
-      width: 100%; border: none; border-top: 0.5px solid #eee;
-      padding: 5px 4px; font-size: 11px; outline: none;
-      margin-top: 4px; font-family: inherit; color: #333;
-    }
-    .divider-tr td { padding: 2px 0; }
-    .divider-line { border-top: 0.8px dashed #d8d0c4; }
+    .block-popup.open { display: block; }
+    .popup-title { font-size: 10px; color: #aaa; letter-spacing: 0.08em; text-transform: uppercase; font-family: 'Helvetica Neue', sans-serif; margin-bottom: 8px; }
+    .popup-colors { display: flex; gap: 5px; margin-bottom: 10px; flex-wrap: wrap; }
+    .p-swatch { width: 22px; height: 22px; border-radius: 4px; cursor: pointer; border: 2px solid transparent; transition: transform 0.1s; }
+    .p-swatch:hover { transform: scale(1.15); }
+    .p-swatch.selected { border-color: #1a1a1a; }
+    .popup-input { width: 100%; border: 0.5px solid #d8d0c4; border-radius: 4px; padding: 7px 10px; font-size: 13px; font-family: inherit; outline: none; color: #333; margin-bottom: 10px; }
+    .popup-input:focus { border-color: #aaa; }
+    .popup-btns { display: flex; gap: 6px; }
+    .popup-cancel { flex: 1; font-size: 12px; color: #888; background: #f7f2eb; border: 0.5px solid #d8d0c4; border-radius: 4px; padding: 6px; cursor: pointer; font-family: 'Helvetica Neue', sans-serif; }
+    .popup-cancel:hover { background: #ede7de; }
+    .popup-ok { flex: 1; font-size: 12px; color: #fdf9f4; background: #1a1a1a; border: none; border-radius: 4px; padding: 6px; cursor: pointer; font-family: 'Helvetica Neue', sans-serif; }
+    .popup-ok:hover { background: #333; }
+    .popup-clear { font-size: 11px; color: #e07070; background: none; border: none; cursor: pointer; font-family: 'Helvetica Neue', sans-serif; padding: 6px 4px; }
+    .popup-clear:hover { text-decoration: underline; }
 
     /* 푸터 */
-    .planner-footer {
-      border-top: 0.5px solid #d8d0c4; background: #f7f2eb;
-      padding: 10px 24px; display: flex; justify-content: space-between; align-items: center;
-    }
+    .planner-footer { border-top: 0.5px solid #d8d0c4; background: #f7f2eb; padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; }
     .hint { font-size: 10px; color: #bbb; font-family: 'Helvetica Neue', sans-serif; }
-    .btn-clear {
-      font-size: 10px; color: #bbb; background: none; border: none;
-      cursor: pointer; font-family: 'Helvetica Neue', sans-serif;
-      letter-spacing: 0.06em; text-transform: uppercase;
-    }
+    .btn-clear { font-size: 10px; color: #bbb; background: none; border: none; cursor: pointer; font-family: 'Helvetica Neue', sans-serif; letter-spacing: 0.06em; text-transform: uppercase; }
     .btn-clear:hover { color: #555; }
 
     @media (max-width: 520px) {
@@ -245,24 +143,11 @@
       .quote-block { border-right: none; padding-right: 0; border-bottom: 0.5px solid #d8d0c4; padding-bottom: 12px; }
       .date-block { padding-left: 0; }
     }
-
-  /* 모바일 반응형 */
-  @media (max-width: 600px) {
-    body { padding: 12px 8px; }
-
-    .header { grid-template-columns: 1fr; gap: 12px; }
-    .quote-block { border-right: none; border-bottom: 0.5px solid #d8d0c4; padding-right: 0; padding-bottom: 12px; }
-    .date-block { padding-left: 0; min-width: unset; }
-
-    .body { grid-template-columns: 1fr; }
-    .left-col { border-right: none; border-bottom: 0.5px solid #d8d0c4; padding: 16px; }
-    .right-col { padding: 16px; }
-  }
   </style>
 </head>
 <body>
-<div class="planner">
 
+<div class="planner">
   <!-- 헤더 -->
   <div class="header">
     <div class="quote-block">
@@ -315,38 +200,294 @@
         <textarea class="brain-textarea" placeholder="지금 머릿속에 있는 것들을 자유롭게 적어보세요..."></textarea>
       </div>
     </div>
+
     <div class="right-col">
       <div class="timebox-header">
         <span class="section-label" style="margin-bottom:0">Time Box</span>
         <span class="min-note">30 min</span>
       </div>
-      <table class="timebox-table" id="tbTable"></table>
+      <div class="timebox-hint">드래그로 여러 칸 선택 → 색상·내용 입력</div>
+      <div class="tb-wrap" id="tbWrap"></div>
     </div>
   </div>
 
   <div class="planner-footer">
-    <span class="hint">시간 셀 클릭 → 색상 + 내용 입력</span>
+    <span class="hint">드래그 선택 후 색상과 내용을 입력하세요</span>
     <button class="btn-clear" onclick="clearAll()">초기화</button>
+  </div>
+</div>
+
+<!-- 블록 입력 팝업 -->
+<div class="block-popup" id="blockPopup">
+  <div class="popup-title">시간 블록 설정</div>
+  <div class="popup-colors" id="popupColors"></div>
+  <input class="popup-input" id="popupInput" type="text" placeholder="할 일 입력 (예: 독서, 운동...)" />
+  <div class="popup-btns">
+    <button class="popup-clear" onclick="clearBlock()">삭제</button>
+    <button class="popup-cancel" onclick="closePopup()">취소</button>
+    <button class="popup-ok" onclick="applyBlock()">확인</button>
   </div>
 </div>
 
 <script>
   const EMOJIS = ['🙏','📖','🤲','💪','🍋','🦵','🌅','🧘','🏃','💧','🥗','😴','📝','🎯','🔥','💡','🌿','☀️','🎵','❤️','⭐','🌟','✅','🧠'];
   const COLORS = [
-    {bg:'#c8eadf',fg:'#0f6e56'},{bg:'#fde9c8',fg:'#854f0b'},{bg:'#fcd5d5',fg:'#a32d2d'},
-    {bg:'#d5e8f8',fg:'#185fa5'},{bg:'#e8d5f8',fg:'#534ab7'},{bg:'#d5f8e1',fg:'#3b6d11'},
-    {bg:'#f8d5ed',fg:'#993556'},{bg:'#fffbd5',fg:'#7a6a00'},{bg:'transparent',fg:'#bbb'},
+    {bg:'#c8eadf',fg:'#0f6e56'},
+    {bg:'#fde9c8',fg:'#854f0b'},
+    {bg:'#fcd5d5',fg:'#a32d2d'},
+    {bg:'#d5e8f8',fg:'#185fa5'},
+    {bg:'#e8d5f8',fg:'#534ab7'},
+    {bg:'#d5f8e1',fg:'#3b6d11'},
+    {bg:'#f8d5ed',fg:'#993556'},
+    {bg:'#fffbd5',fg:'#7a6a00'},
   ];
-  const HOURS = [4,5,6,null,7,8,9,10,11,null,12,1,2,3,4,null,5,6,7,8,9,10,11,null,12,1,2];
+
+  // 시간 슬롯 정의 (null = 구분선)
+  const SLOTS = [
+    {h:4},{h:5},{h:6},null,
+    {h:7},{h:8},{h:9},{h:10},{h:11},null,
+    {h:12},{h:1},{h:2},{h:3},{h:4},null,
+    {h:5},{h:6},{h:7},{h:8},{h:9},{h:10},{h:11},null,
+    {h:12},{h:1},{h:2}
+  ];
+
+  // 실제 셀 인덱스만 추출
+  const CELL_INDICES = [];
+  SLOTS.forEach((s, i) => { if (s !== null) CELL_INDICES.push(i); });
+
+  // 블록 데이터: key = 셀 인덱스, value = {ci, text, groupId}
+  let blocks = {};
+  // 그룹 데이터: groupId -> {ci, text, cells:[인덱스 배열]}
+  let groups = {};
+  let groupCounter = 0;
+
+  // 드래그 상태
+  let isDragging = false;
+  let dragStart = -1;
+  let dragEnd = -1;
+  let selectedCells = [];
+
+  // 팝업 상태
+  let popupCi = 0;
+  let pendingCells = [];
 
   let routines = [
     {emoji:'🙏',name:'감사'},{emoji:'📖',name:'말씀'},{emoji:'🤲',name:'기도'},
     {emoji:'💪',name:'운동'},{emoji:'🍋',name:'레몬물'},{emoji:'🦵',name:'스쿼트'},
   ];
-  let cells = {};
-  let openKey = null;
   let openEmoji = null;
 
+  /* ── 타임박스 렌더 ── */
+  function buildTimebox() {
+    const wrap = document.getElementById('tbWrap');
+    wrap.innerHTML = '';
+    SLOTS.forEach((s, idx) => {
+      const row = document.createElement('div');
+      if (s === null) {
+        row.className = 'tb-row divider';
+        row.innerHTML = '<div style="width:22px;flex-shrink:0"></div><div class="tb-divline"></div>';
+      } else {
+        row.className = 'tb-row';
+        row.dataset.idx = idx;
+
+        const hourEl = document.createElement('div');
+        hourEl.className = 'tb-hour';
+        hourEl.textContent = s.h;
+
+        const cell = document.createElement('div');
+        cell.className = 'tb-cell';
+        cell.dataset.idx = idx;
+        applyBlockStyle(cell, idx);
+
+        // 드래그 이벤트
+        cell.addEventListener('mousedown', onCellMouseDown);
+        cell.addEventListener('mouseover', onCellMouseOver);
+        cell.addEventListener('touchstart', onTouchStart, {passive:false});
+        cell.addEventListener('touchmove', onTouchMove, {passive:false});
+
+        row.appendChild(hourEl);
+        row.appendChild(cell);
+      }
+      wrap.appendChild(row);
+    });
+  }
+
+  function applyBlockStyle(cell, idx) {
+    const b = blocks[idx];
+    const label = cell.querySelector('.tb-label') || document.createElement('span');
+    label.className = 'tb-label';
+    if (b) {
+      const c = COLORS[b.ci];
+      cell.style.background = c.bg;
+      cell.style.color = c.fg;
+      // 그룹의 첫 번째 셀에만 텍스트 표시
+      const g = groups[b.groupId];
+      const isFirst = g && g.cells[0] === idx;
+      label.textContent = isFirst ? b.text : '';
+    } else {
+      cell.style.background = 'transparent';
+      cell.style.color = '#bbb';
+      label.textContent = '';
+    }
+    if (!cell.querySelector('.tb-label')) cell.appendChild(label);
+  }
+
+  function refreshAll() {
+    document.querySelectorAll('.tb-cell').forEach(cell => {
+      applyBlockStyle(cell, Number(cell.dataset.idx));
+    });
+  }
+
+  /* ── 드래그 (마우스) ── */
+  function onCellMouseDown(e) {
+    e.preventDefault();
+    isDragging = true;
+    dragStart = Number(this.dataset.idx);
+    dragEnd = dragStart;
+    updateSelection();
+  }
+
+  function onCellMouseOver(e) {
+    if (!isDragging) return;
+    dragEnd = Number(this.dataset.idx);
+    updateSelection();
+  }
+
+  document.addEventListener('mouseup', (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+    if (selectedCells.length > 0) openPopup(e);
+  });
+
+  /* ── 드래그 (터치) ── */
+  function onTouchStart(e) {
+    e.preventDefault();
+    isDragging = true;
+    dragStart = Number(this.dataset.idx);
+    dragEnd = dragStart;
+    updateSelection();
+  }
+
+  function onTouchMove(e) {
+    e.preventDefault();
+    if (!isDragging) return;
+    const touch = e.touches[0];
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (el && el.classList.contains('tb-cell')) {
+      dragEnd = Number(el.dataset.idx);
+      updateSelection();
+    }
+  }
+
+  document.addEventListener('touchend', (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+    if (selectedCells.length > 0) {
+      const touch = e.changedTouches[0];
+      openPopup({clientX: touch.clientX, clientY: touch.clientY});
+    }
+  });
+
+  function updateSelection() {
+    // dragStart ~ dragEnd 사이의 실제 셀 인덱스만 선택
+    const startPos = CELL_INDICES.indexOf(dragStart);
+    const endPos = CELL_INDICES.indexOf(dragEnd);
+    if (startPos === -1 || endPos === -1) return;
+    const lo = Math.min(startPos, endPos);
+    const hi = Math.max(startPos, endPos);
+    selectedCells = CELL_INDICES.slice(lo, hi + 1);
+
+    document.querySelectorAll('.tb-cell').forEach(cell => {
+      const idx = Number(cell.dataset.idx);
+      if (selectedCells.includes(idx)) {
+        cell.classList.add('selecting');
+      } else {
+        cell.classList.remove('selecting');
+      }
+    });
+  }
+
+  /* ── 팝업 ── */
+  function openPopup(e) {
+    pendingCells = [...selectedCells];
+    clearSelecting();
+
+    // 기존 블록 있으면 값 가져오기
+    const existing = blocks[pendingCells[0]];
+    popupCi = existing ? existing.ci : 0;
+    document.getElementById('popupInput').value = existing ? existing.text : '';
+    renderPopupColors();
+
+    const popup = document.getElementById('blockPopup');
+    popup.classList.add('open');
+
+    // 위치 계산
+    const x = Math.min(e.clientX + 8, window.innerWidth - 260);
+    const y = Math.min(e.clientY + 8, window.innerHeight - 200);
+    popup.style.left = x + 'px';
+    popup.style.top = y + window.scrollY + 'px';
+
+    setTimeout(() => document.getElementById('popupInput').focus(), 50);
+  }
+
+  function renderPopupColors() {
+    const cont = document.getElementById('popupColors');
+    cont.innerHTML = COLORS.map((c, ci) =>
+      `<div class="p-swatch ${ci===popupCi?'selected':''}" style="background:${c.bg};" onclick="selectPopupColor(${ci})"></div>`
+    ).join('');
+  }
+
+  function selectPopupColor(ci) {
+    popupCi = ci;
+    renderPopupColors();
+  }
+
+  function applyBlock() {
+    const text = document.getElementById('popupInput').value.trim();
+    const gid = ++groupCounter;
+    pendingCells.forEach(idx => {
+      blocks[idx] = { ci: popupCi, text, groupId: gid };
+    });
+    groups[gid] = { ci: popupCi, text, cells: [...pendingCells] };
+    refreshAll();
+    closePopup();
+  }
+
+  function clearBlock() {
+    pendingCells.forEach(idx => {
+      if (blocks[idx]) {
+        const gid = blocks[idx].groupId;
+        if (groups[gid]) {
+          groups[gid].cells.forEach(i => delete blocks[i]);
+          delete groups[gid];
+        }
+        delete blocks[idx];
+      }
+    });
+    refreshAll();
+    closePopup();
+  }
+
+  function closePopup() {
+    document.getElementById('blockPopup').classList.remove('open');
+    clearSelecting();
+    pendingCells = [];
+  }
+
+  function clearSelecting() {
+    selectedCells = [];
+    document.querySelectorAll('.tb-cell.selecting').forEach(c => c.classList.remove('selecting'));
+  }
+
+  // 팝업 바깥 클릭 시 닫기
+  document.addEventListener('mousedown', (e) => {
+    const popup = document.getElementById('blockPopup');
+    if (popup.classList.contains('open') && !popup.contains(e.target) && !e.target.classList.contains('tb-cell')) {
+      closePopup();
+    }
+  });
+
+  /* ── 루틴 ── */
   function renderRoutines() {
     const c = document.getElementById('routineItems');
     c.innerHTML = routines.map(r => `
@@ -425,60 +566,7 @@
     document.getElementById('btnEditRoutine').classList.remove('active');
   }
 
-  function buildTimebox() {
-    const tb = document.getElementById('tbTable'); tb.innerHTML = '';
-    HOURS.forEach((h, i) => {
-      const tr = document.createElement('tr');
-      if (h === null) {
-        tr.classList.add('divider-tr');
-        tr.innerHTML = `<td colspan="2"><div class="divider-line"></div></td>`;
-      } else {
-        const key = `${h}_${i}`;
-        const d = cells[key] || {ci:8, text:''};
-        const c = COLORS[d.ci];
-        tr.innerHTML = `
-          <td class="th">${h}</td>
-          <td class="tc">
-            <div class="bar" style="background:${c.bg};color:${c.fg};" onclick="openCP(event,'${key}')">
-              <span class="bar-text" id="bt-${key}" style="color:${c.fg};">${d.text}</span>
-            </div>
-            <div class="cp" id="cp-${key}">
-              ${COLORS.map((col,ci)=>`<div class="swatch" style="background:${ci===8?'#f0ebe3':col.bg};" onclick="applyColor(event,'${key}',${ci})"></div>`).join('')}
-              <input type="text" value="${d.text}" placeholder="내용 입력" oninput="updateText('${key}',this.value)" onclick="event.stopPropagation()" />
-            </div>
-          </td>`;
-      }
-      tb.appendChild(tr);
-    });
-  }
-
-  function openCP(e, key) {
-    e.stopPropagation();
-    if (openKey && openKey !== key) document.getElementById('cp-'+openKey)?.classList.remove('open');
-    const el = document.getElementById('cp-'+key);
-    el.classList.toggle('open');
-    openKey = el.classList.contains('open') ? key : null;
-    if (openKey) setTimeout(()=>el.querySelector('input')?.focus(), 50);
-  }
-
-  function applyColor(e, key, ci) {
-    e.stopPropagation();
-    if (!cells[key]) cells[key] = {ci:8, text:''};
-    cells[key].ci = ci;
-    const c = COLORS[ci];
-    const bar = document.getElementById('cp-'+key)?.previousElementSibling;
-    const bt = document.getElementById('bt-'+key);
-    if (bar) { bar.style.background = c.bg; bar.style.color = c.fg; }
-    if (bt) bt.style.color = c.fg;
-  }
-
-  function updateText(key, val) {
-    if (!cells[key]) cells[key] = {ci:8, text:''};
-    cells[key].text = val;
-    const bt = document.getElementById('bt-'+key);
-    if (bt) bt.textContent = val;
-  }
-
+  /* ── Top 3 체크 ── */
   function toggleCheck(el) {
     el.classList.toggle('checked');
     const row = el.closest('.priority-item');
@@ -487,6 +575,7 @@
     else { row.style.opacity='1'; inp.style.textDecoration='none'; }
   }
 
+  /* ── 초기화 ── */
   function clearAll() {
     if (!confirm('오늘 플래너를 초기화할까요?')) return;
     document.querySelectorAll('.priority-item input').forEach(i => { i.value=''; i.style.textDecoration='none'; });
@@ -495,10 +584,11 @@
     document.querySelector('.brain-textarea').value = '';
     document.querySelectorAll('.routine-item').forEach(r => r.classList.remove('done'));
     updateProgress();
-    cells = {}; openKey = null;
+    blocks = {}; groups = {}; groupCounter = 0;
     buildTimebox();
   }
 
+  /* ── 날짜 ── */
   function setDate() {
     const now = new Date();
     document.getElementById('dateVal').textContent =
@@ -510,7 +600,6 @@
   }
 
   document.addEventListener('click', () => {
-    if (openKey) { document.getElementById('cp-'+openKey)?.classList.remove('open'); openKey=null; }
     if (openEmoji) { document.getElementById('ep-'+openEmoji)?.classList.remove('open'); openEmoji=null; }
   });
 
